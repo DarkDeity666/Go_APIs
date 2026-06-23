@@ -1,7 +1,15 @@
-package main 
+package main
 
-import "fmt"
+import(
+	"fmt"
+	"github.com/DarkDeity666/Go_APIs/internal/config"
+	"github.com/gin-gonic/gin"
+) 
 
 func main(){
-	fmt.Println("Go APIs started")
+	cfg := config.MustLoad()
+	router := gin.Default()
+	fmt.Println(cfg)
+
+	
 }

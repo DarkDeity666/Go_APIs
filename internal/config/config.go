@@ -34,3 +34,11 @@ func Load() (*Config, error) {
 	}
 	return ctg, nil
 }
+
+func MustLoad() *Config {
+	cfg,err := Load()
+	if err != nil || cfg == nil{
+		panic(err)
+	}
+	return cfg 
+}
