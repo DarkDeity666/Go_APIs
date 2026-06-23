@@ -16,6 +16,29 @@ type Config struct{
 	CloudinaryAPISecret string
 }
 
-func Load()(*config,error){
+func Load() (*Config, error) {
+	err:= godotenv.Load()
+	if err != nil{
+		return nil, err 
+	}
 
+	ctg := &Config{
+		Port: os.Getenv("PORT"),
+		MongoURI: os.Getenv("MONGO_URI"),
+		RedisAddr: os.Getenv("REDIS_ADDR"),
+		JWTSecret: os.Getenv("JWT_SECRET"),
+		JWTRefreshSecret: os.Getenv("JWT_REFRESH_SECRET"),
+		CloudinaryCloudName: os.Getenv("CLOUDINARY_CLOUD_NAME"),
+		CloudinaryAPIKey: os.Getenv("CLOUDINARY_API_KEY"),
+		CloudinaryAPISecret: os.Getenv("CLOUDINARY_API_SECRET"),
+	}
+	return ctg, nil
+}
+
+func MustLoad() *Config {
+	cfg,err := Load()
+	if err != nil || cfg == nil{
+		panic(err)
+	}
+	return cfg 
 }
