@@ -11,13 +11,13 @@ import (
 
 
 type User struct{
-	ID bson.ObjectID `bson:"_ id,omitempty" json:"id`
+	ID bson.ObjectID `bson:"_id,omitempty" json:"id"`
 	Username string  `bson:"username" json:"username"`
 	Email string `bson:"email" json:"email"`
-	Password string `bson:"password omitempty"`
+	Password string `bson:"password,omitempty" json:"-"`
 	Avatar string `bson:"avatar" json:"avatar"`
-	CreatedAt time.Time `bson:"created at" json:"created at"`
-	UpdatedAt time.Time `bson:"updated at" json:"updated at"`
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }
 
 type RegisterRequest struct{
