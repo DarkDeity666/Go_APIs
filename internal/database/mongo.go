@@ -1,9 +1,9 @@
-package databse
+package database
 
 import (
 	"context"
 	"time"
-
+	"fmt"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
@@ -23,5 +23,6 @@ func ConnectionMongo(uri string) (*mongo.Client, error){
 	if err !=nil {
 		return nil ,err
 	}
+	fmt.Println("Mongodb server is connected")
 	return client ,nil
 }
