@@ -7,8 +7,6 @@ import (
 
 )
 
-// "time"
-
 
 type User struct{
 	ID bson.ObjectID `bson:"_id,omitempty" json:"id"`
