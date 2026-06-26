@@ -6,9 +6,18 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
+//this line is always needed as this has so be passed in every database funcion
+//eg
+// func FindByEmail(Client *mongo.Client,email string){}
+// func CreateUser(Client *mongo.Client,user User){}
+// func Delete(client * mongo.Client, id string){}
+
+// note how many times we are passing client here so we can use struct
+
 type UserRepository struct {
 	client *mongo.Client
 }
+
 
 func NewUserRepository(client *mongo.Client) *UserRepository {
 	return &UserRepository{
