@@ -27,8 +27,9 @@ func main(){
 	//Api grouping
 	api:= router.Group("/api/v1")
 
-	//register router
-	routes.RegisterAuthRouter(api)
+	// routes
+	routes.TestRoutes(api)
+	routes.RegisterNewUser(api)
 
 	//server start
 	router.Run(":" + cfg.Port)
