@@ -21,7 +21,8 @@ func Register(c *gin.Context) {
 
 // 	//this checks for the rquest Body and fill the req varible with the incoming request Body
 // 	// and it return either err or nil
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindJSON(&req); 
+	err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
 			"message": "Invalid request body",
