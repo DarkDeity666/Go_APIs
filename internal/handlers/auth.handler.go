@@ -48,7 +48,7 @@ func Register(c *gin.Context) {
 	// User not found -> Continue registration
 	if errors.Is(err, mongo.ErrNoDocuments) {
 
-		// We'll continue here in the next lesson
+		
 
 	} else if err != nil {
 
