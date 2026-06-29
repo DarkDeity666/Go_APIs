@@ -82,7 +82,10 @@ func Register(c *gin.Context) {
 	}
 
 	// will insert struct into database form go local memeory 
-	result ,err := collection.InsertOne(c.Request.Context(),user)
+	result ,err := collection.InsertOne(
+		c.Request.Context(),
+		user,
+	)
 
 	// this will check if the user was able to get craeted of not if now it throw err
 	if err != nil{
@@ -94,8 +97,8 @@ func Register(c *gin.Context) {
 	}
 	_= result
 	// Will return this if the user Registration is successfull
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
-		"message": "User object created successfully.",
+		"message": "User Registered successfully...!",
 	})
 }
