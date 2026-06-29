@@ -3,9 +3,10 @@ package handlers
 import (
 	"errors"
 	"net/http"
-
+	"time"
 	"github.com/DarkDeity666/Go_APIs/internal/database"
 	"github.com/DarkDeity666/Go_APIs/internal/models"
+	"github.com/DarkDeity666/Go_APIs/internal/utils"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -13,14 +14,10 @@ import (
 
 func Register(c *gin.Context) {
 
-// func Register(c *gin.Context){
-// 	// this create a variable named req which can hold the incoming request Body
-// 	//also model.RegisterRequest it telling this variable that this is your datatype
-// 	// and you have to store data in this formate
+	// Create a variable to store the incoming request body
 	var req models.RegisterRequest
 
-// 	//this checks for the rquest Body and fill the req varible with the incoming request Body
-// 	// and it return either err or nil
+	// Read JSON body and fill the req variable
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -29,12 +26,12 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Get users collection
+	// Get the users collection from MongoDB
 	collection := database.Client.
 		Database("GoAPIs").
 		Collection("users")
 
-	// Empty user to store MongoDB result
+	// Empty struct where MongoDB will store MongoDB result
 	var existingUser models.User
 
 	// Search user by email
@@ -45,23 +42,8 @@ func Register(c *gin.Context) {
 		},
 	).Decode(&existingUser)
 
-	// User not found -> Continue registration
-	if errors.Is(err, mongo.ErrNoDocuments) {
-
-		
-
-	} else if err != nil {
-
-		// Some database error occurred
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Database error",
-		})
-		return
-
-	} else {
-
-		// User already exists
+	// User already exists
+	if err == nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"success": false,
 			"message": "User already exists",
@@ -69,9 +51,54 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// Temporary response
-	c.JSON(http.StatusOK, gin.H{
+	// Database error -- this check if there was error in database connection
+	// or any other dataase error 
+	if !errors.Is(err, mongo.ErrNoDocuments) {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"message": "Database error",
+		})
+		return
+	}
+
+	// Hash user's password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"message": "Failed to hash password",
+		})
+		return
+	}
+
+	// Create User struct -- basically this is inserting data into User Struct
+	user := models.User{
+		Username:  req.Username,
+		Email:     req.Email,
+		Password:  hashedPassword,
+		Avatar:    "",
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	// will insert struct into database form go local memeory 
+	result ,err := collection.InsertOne(
+		c.Request.Context(),
+		user,
+	)
+
+	// this will check if the user was able to get craeted of not if now it throw err
+	if err != nil{
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"success":false,
+			"message":"Failed to Create User",
+		})
+		return
+	}
+	_= result
+	// Will return this if the user Registration is successfull
+	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
-		"message": "Email is available. Ready to create user.",
+		"message": "User Registered successfully...!",
 	})
 }

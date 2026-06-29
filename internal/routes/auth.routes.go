@@ -11,5 +11,5 @@ func TestRoutes(router *gin.RouterGroup){
 }
 func RegisterNewUser(router *gin.RouterGroup){
 	auth:= router.Group("auth")
-	auth.GET("/register", handlers.Register)
+	auth.POST("/register", handlers.Register)
 }
